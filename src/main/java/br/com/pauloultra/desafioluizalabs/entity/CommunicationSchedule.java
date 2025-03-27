@@ -34,10 +34,10 @@ public class CommunicationSchedule extends BaseEntity {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_id", nullable = false)
+    @JoinColumn(name = "type_guid", nullable = false)
     private CommunicationType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id", nullable = false)
+    @JoinColumn(name = "status_guid", nullable = false)
     private CommunicationStatus status;
 }
