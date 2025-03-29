@@ -10,11 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Communication Scheduler", description = "API para agendamento de comunicações LuizaLabs")
 @RequestMapping("/api/v1/communications")
@@ -32,7 +34,7 @@ public interface CommunicationApi {
             required = true,
             content = @Content(schema = @Schema(implementation = CommunicationRequestDto.class))
     )
-            @RequestBody @Valid CommunicationRequestDto request);
+            @Valid @RequestBody CommunicationRequestDto request);
 
     @Operation(summary = "Consultar agendamento",
             description = "Recupera os detalhes de um agendamento de comunicação específico")
@@ -42,7 +44,7 @@ public interface CommunicationApi {
     @GetMapping(value = "/{guid}", produces = MediaType.APPLICATION_JSON_VALUE)
     CommunicationResponseDto getByGuid(
             @Parameter(description = "Busca do agendamento pelo GUID", example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable String guid);
+            @PathVariable UUID guid);
 
     @Operation(summary = "Consultar status", description = "Recupera o status atual de um agendamento")
     @ApiResponse(responseCode = "200", description = "Status encontrado",
@@ -51,13 +53,17 @@ public interface CommunicationApi {
     @GetMapping(value = "/{guid}/status", produces = MediaType.APPLICATION_JSON_VALUE)
     CommunicationStatusResponseDto getStatusByGuid(
             @Parameter(description = "GUID do agendamento", example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable String guid);
+            @PathVariable byte[] guid);
 
     @Operation(summary = "Listar todos agendamentos", description = "Recupera todos os agendamentos cadastrados")
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos",
             content = @Content(schema = @Schema(implementation = CommunicationResponseDto[].class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    List<CommunicationResponseDto> getAll();
+    Page<CommunicationResponseDto> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "desc") String sortDirection);
 
     @Operation(summary = "Cancelar agendamento", description = "Cancela um agendamento não processado")
     @ApiResponse(responseCode = "204", description = "Agendamento cancelado com sucesso")
@@ -65,7 +71,7 @@ public interface CommunicationApi {
     @ApiResponse(responseCode = "404", description = "Agendamento não encontrado")
     @DeleteMapping("/{guid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void delete(
+    ResponseEntity<CommunicationResponseDto> delete(
             @Parameter(description = "GUID do agendamento a ser cancelado", example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable String guid);
+            @PathVariable UUID guid);
 }

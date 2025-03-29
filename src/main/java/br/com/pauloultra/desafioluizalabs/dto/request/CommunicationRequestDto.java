@@ -11,4 +11,5 @@ public record CommunicationRequestDto(
         @NotNull @Future LocalDateTime scheduledDateTime,
         @NotBlank @Size(max = 255) String recipient,
         @NotBlank @Size(max = 1000) String message,
-        @NotBlank String type) {}
+        @NotBlank String type,
+        @NotBlank String status) {}

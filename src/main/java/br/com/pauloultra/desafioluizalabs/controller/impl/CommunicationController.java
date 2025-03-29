@@ -5,9 +5,11 @@ import br.com.pauloultra.desafioluizalabs.dto.request.CommunicationRequestDto;
 import br.com.pauloultra.desafioluizalabs.dto.response.CommunicationResponseDto;
 import br.com.pauloultra.desafioluizalabs.dto.response.CommunicationStatusResponseDto;
 import br.com.pauloultra.desafioluizalabs.service.CommunicationService;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class CommunicationController implements CommunicationApi {
@@ -20,26 +22,27 @@ public class CommunicationController implements CommunicationApi {
 
     @Override
     public CommunicationResponseDto schedule(CommunicationRequestDto request) {
-        return null;
+        return communicationService.schedule(request);
     }
 
     @Override
-    public CommunicationResponseDto getByGuid(String guid) {
-        return null;
+    public CommunicationResponseDto getByGuid(UUID guid) {
+        return communicationService.getByGuid(guid);
     }
 
     @Override
-    public CommunicationStatusResponseDto getStatusByGuid(String guid) {
-        return null;
+    public CommunicationStatusResponseDto getStatusByGuid(byte[] guid) {
+        return communicationService.getStatusByGuid(guid);
     }
 
     @Override
-    public List<CommunicationResponseDto> getAll() {
-        return List.of();
+    public Page<CommunicationResponseDto> getAll(int page, int size, String sort, String sortDirection) {
+        return communicationService.getAll(page, size, sort, sortDirection);
     }
 
     @Override
-    public void delete(String guid) {
-
+    public ResponseEntity<CommunicationResponseDto> delete(UUID guid) {
+        CommunicationResponseDto canceledSchedule = communicationService.cancelCommunication(guid);
+        return ResponseEntity.ok(canceledSchedule);
     }
 }

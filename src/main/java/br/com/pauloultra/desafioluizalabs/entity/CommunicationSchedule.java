@@ -1,11 +1,12 @@
 package br.com.pauloultra.desafioluizalabs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity(name = "communication_schedules")
 @Table(indexes = {
         @Index(name = "IDX_GUID_COMMUNICATION_SCHEDULES", columnList = "guid"),
@@ -14,9 +15,15 @@ import java.time.LocalDateTime;
         })
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommunicationSchedule extends BaseEntity {
+public class CommunicationSchedule {
+
+    @Id
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID guid;
 
     @Column(nullable = false)
     private LocalDateTime scheduledDateTime;
@@ -34,10 +41,16 @@ public class CommunicationSchedule extends BaseEntity {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_guid", nullable = false)
+    @JoinColumn(name = "type_id", nullable = false)
+    @JsonIgnore
     private CommunicationType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_guid", nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
+    @JsonIgnore
     private CommunicationStatus status;
+
+    @Version
+    @Column(nullable = false)
+    private Long version = 0L;
 }

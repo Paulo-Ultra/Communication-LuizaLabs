@@ -8,8 +8,6 @@ public record CommunicationResponseDto(
         String recipient,
         String message,
         String type,
-        String typeDescription,
         String status,
-        String statusDescription,
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {}
