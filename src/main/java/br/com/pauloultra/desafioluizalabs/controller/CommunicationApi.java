@@ -3,6 +3,7 @@ package br.com.pauloultra.desafioluizalabs.controller;
 import br.com.pauloultra.desafioluizalabs.dto.request.CommunicationRequestDto;
 import br.com.pauloultra.desafioluizalabs.dto.response.CommunicationResponseDto;
 import br.com.pauloultra.desafioluizalabs.dto.response.CommunicationStatusResponseDto;
+import br.com.pauloultra.desafioluizalabs.validator.ValidGuid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,7 +54,7 @@ public interface CommunicationApi {
     @GetMapping(value = "/{guid}/status", produces = MediaType.APPLICATION_JSON_VALUE)
     CommunicationStatusResponseDto getStatusByGuid(
             @Parameter(description = "GUID do agendamento", example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable byte[] guid);
+            @PathVariable @ValidGuid String guid);
 
     @Operation(summary = "Listar todos agendamentos", description = "Recupera todos os agendamentos cadastrados")
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos",

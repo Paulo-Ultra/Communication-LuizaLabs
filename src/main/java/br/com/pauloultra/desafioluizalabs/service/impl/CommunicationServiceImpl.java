@@ -21,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -37,6 +36,9 @@ public class CommunicationServiceImpl implements CommunicationService {
     public static final String ALREADY_PROCESSED = "Schedules already processed cannot be cancelled";
     public static final long CANCELED = 5L;
     public static final String STATUS_CANCELLED_NOT_CONFIGURED = "Canceled status not configured";
+    public static final String NOT_POSSIBLE_TO_SAVE_THE_SCHEDULE = "It was not possible to save the schedule.";
+    public static final String ERROR_RETRIEVING_RECORDS = "Error retrieving records.";
+    public static final String CANCELLING_ERROR_SCHEDULE = "An error occurred while cancelling a schedule";
     private final CommunicationRepository communicationRepository;
     private final CommunicationTypeRepository communicationTypeRepository;
     private final CommunicationStatusRepository communicationStatusRepository;
@@ -66,13 +68,13 @@ public class CommunicationServiceImpl implements CommunicationService {
 
         CommunicationSchedule schedule = getCommunicationSchedule(request, type, processingStatus);
 
-        CommunicationSchedule savedSchedule  = null;
         try {
-            savedSchedule = communicationRepository.save(schedule);
+            CommunicationSchedule savedSchedule = communicationRepository.save(schedule);
+            return toResponseDto(savedSchedule);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw new StatusException(NOT_POSSIBLE_TO_SAVE_THE_SCHEDULE);
         }
-        return toResponseDto(Objects.requireNonNull(savedSchedule));
     }
 
     @Override
@@ -82,13 +84,10 @@ public class CommunicationServiceImpl implements CommunicationService {
 
     @Override
     public CommunicationStatusResponseDto getStatusByGuid(byte[] guid) {
-        try {
-            return toStatusResponseDto(communicationStatusRepository.findStatusByCommunicationGuid(guid)
-                    .orElseThrow(() -> new ResourceNotFoundException(SCHEDULE_NOT_FOUND)));
-        } catch (Exception e) {
-            e.getMessage();
-        }
-        return null;
+
+        CommunicationStatus status = communicationStatusRepository.findStatusByCommunicationGuid(guid)
+                .orElseThrow(() -> new ResourceNotFoundException(SCHEDULE_NOT_FOUND));
+        return toStatusResponseDto(status);
     }
 
     @Override
@@ -101,8 +100,8 @@ public class CommunicationServiceImpl implements CommunicationService {
                     .map(this::toResponseDto);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw new StatusException(ERROR_RETRIEVING_RECORDS);
         }
-        return Page.empty();
     }
 
     @Override
@@ -121,9 +120,13 @@ public class CommunicationServiceImpl implements CommunicationService {
         schedule.setStatus(canceledStatus);
         schedule.setUpdatedAt(LocalDateTime.now());
 
-        CommunicationSchedule updated = communicationRepository.save(schedule);
-
-        return toResponseDto(updated);
+        try {
+            CommunicationSchedule updated = communicationRepository.save(schedule);
+            return toResponseDto(updated);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new StatusException(CANCELLING_ERROR_SCHEDULE);
+        }
     }
 
     private CommunicationType getCommunicationType(CommunicationRequestDto request) {
@@ -152,16 +155,14 @@ public class CommunicationServiceImpl implements CommunicationService {
                 entity.getType().getCode(),
                 entity.getStatus().getCode(),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt()
-        );
+                entity.getUpdatedAt());
     }
 
     private CommunicationStatusResponseDto toStatusResponseDto(CommunicationStatus entity) {
         return new CommunicationStatusResponseDto(
                 entity.getCode(),
                 entity.getDescription(),
-                entity.isFinalState()
-        );
+                entity.isFinalState());
     }
 
     private CommunicationSchedule getEntityByGuid(UUID guid) {

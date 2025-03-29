@@ -5,6 +5,7 @@ import br.com.pauloultra.desafioluizalabs.dto.request.CommunicationRequestDto;
 import br.com.pauloultra.desafioluizalabs.dto.response.CommunicationResponseDto;
 import br.com.pauloultra.desafioluizalabs.dto.response.CommunicationStatusResponseDto;
 import br.com.pauloultra.desafioluizalabs.service.CommunicationService;
+import br.com.pauloultra.desafioluizalabs.utils.Utils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +32,9 @@ public class CommunicationController implements CommunicationApi {
     }
 
     @Override
-    public CommunicationStatusResponseDto getStatusByGuid(byte[] guid) {
-        return communicationService.getStatusByGuid(guid);
+    public CommunicationStatusResponseDto getStatusByGuid(String guid) {
+        byte[] guidBytes = Utils.convertGuidStringToBytes(guid);
+        return communicationService.getStatusByGuid(guidBytes);
     }
 
     @Override

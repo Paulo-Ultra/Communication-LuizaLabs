@@ -14,7 +14,7 @@ public interface CommunicationStatusRepository extends JpaRepository<Communicati
 
     @Query(value = "SELECT cs.* FROM communication_statuses cs " +
             "JOIN communication_schedules c ON cs.id = c.status_id " +
-            "WHERE c.guid = UUID_TO_BIN(:guid)",
+            "WHERE c.guid = :guid",
             nativeQuery = true)
     Optional<CommunicationStatus> findStatusByCommunicationGuid(@Param("guid") byte[] communicationGuid);
 }

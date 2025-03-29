@@ -23,10 +23,22 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(StatusException.class)
-    public final ResponseEntity<Object> handleResourceNotFoundException(StatusException statusException) throws Exception {
+    public final ResponseEntity<Object> handleStatusException(StatusException statusException) throws Exception {
 
         log.error("An error happened to call API: {}", statusException);
         return new ResponseEntity<>(new ExceptionalResponse(LocalDateTime.now(), statusException.getMessage(), HttpStatus.BAD_REQUEST),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionalResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+
+        log.error("An error happened to call API: {}", ex);
+        ExceptionalResponse error = new ExceptionalResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
