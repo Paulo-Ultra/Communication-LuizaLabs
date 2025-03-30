@@ -309,6 +309,8 @@ mvn spring-boot:run
 
 ### 📊 Cobertura de Testes
 
+![Image](https://github.com/user-attachments/assets/d3125115-240f-4847-bdc8-02d13979be3e)
+
 Execute os testes com:
 ```bash
 mvn test
