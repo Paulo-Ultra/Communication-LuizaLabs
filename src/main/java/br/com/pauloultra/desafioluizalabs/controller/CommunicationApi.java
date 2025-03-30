@@ -67,11 +67,11 @@ public interface CommunicationApi {
             @RequestParam(defaultValue = "desc") String sortDirection);
 
     @Operation(summary = "Cancelar agendamento", description = "Cancela um agendamento não processado")
-    @ApiResponse(responseCode = "204", description = "Agendamento cancelado com sucesso")
+    @ApiResponse(responseCode = "200", description = "Agendamento cancelado com sucesso")
     @ApiResponse(responseCode = "400", description = "Agendamento já processado não pode ser cancelado")
     @ApiResponse(responseCode = "404", description = "Agendamento não encontrado")
     @DeleteMapping("/{guid}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     ResponseEntity<CommunicationResponseDto> delete(
             @Parameter(description = "GUID do agendamento a ser cancelado", example = "550e8400-e29b-41d4-a716-446655440000")
             @PathVariable UUID guid);

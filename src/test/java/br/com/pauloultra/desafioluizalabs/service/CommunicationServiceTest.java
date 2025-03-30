@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static br.com.pauloultra.desafioluizalabs.service.impl.CommunicationServiceImpl.CANCELED;
+import static br.com.pauloultra.desafioluizalabs.service.impl.CommunicationServiceImpl.CANCELLED;
 import static br.com.pauloultra.desafioluizalabs.service.impl.CommunicationServiceImpl.ERROR_RETRIEVING_RECORDS;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -261,7 +261,7 @@ class CommunicationServiceTest {
     void cancelCommunicationShouldLogWarningWhenAlreadyCanceled() {
 
         CommunicationSchedule schedule = createTestScheduleEntity();
-        schedule.setStatus(new CommunicationStatus(CANCELED, "CANCELED", "Cancelado pelo usuário", true));
+        schedule.setStatus(new CommunicationStatus(CANCELLED, "CANCELLED", "Cancelado pelo usuário", true));
 
         when(communicationRepository.findByGuid(testGuid)).thenReturn(Optional.of(schedule));
 
@@ -276,7 +276,7 @@ class CommunicationServiceTest {
         CommunicationSchedule schedule = createTestScheduleEntity();
 
         when(communicationRepository.findByGuid(testGuid)).thenReturn(Optional.of(schedule));
-        when(communicationStatusRepository.findById(CANCELED)).thenReturn(Optional.of(new CommunicationStatus()));
+        when(communicationStatusRepository.findById(CANCELLED)).thenReturn(Optional.of(new CommunicationStatus()));
         when(communicationRepository.save(any())).thenThrow(new RuntimeException());
 
         assertThrows(StatusException.class,

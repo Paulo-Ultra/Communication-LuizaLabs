@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidGuid {
-    String message() default "Formato de GUID inválido";
+    String message() default "Invalid GUID format";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

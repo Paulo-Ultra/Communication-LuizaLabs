@@ -32,9 +32,9 @@ public class CommunicationServiceImpl implements CommunicationService {
     public static final String STATUS_NOT_FOUND = "Status not found";
     public static final String SCHEDULE_ALREADY_EXISTS = "An identical schedule with active status already exists";
     public static final String SCHEDULE_NOT_FOUND = "GUID - Schedule Not Found";
-    public static final String CANCELADO = "Schedules already cancelled";
+    public static final String ALREADY_CANCELLED = "Schedules already cancelled";
     public static final String ALREADY_PROCESSED = "Schedules already processed cannot be cancelled";
-    public static final long CANCELED = 5L;
+    public static final long CANCELLED = 5L;
     public static final String STATUS_CANCELLED_NOT_CONFIGURED = "Canceled status not configured";
     public static final String NOT_POSSIBLE_TO_SAVE_THE_SCHEDULE = "It was not possible to save the schedule.";
     public static final String ERROR_RETRIEVING_RECORDS = "Error retrieving records.";
@@ -107,14 +107,14 @@ public class CommunicationServiceImpl implements CommunicationService {
     @Override
     public CommunicationResponseDto cancelCommunication(UUID guid) {
         CommunicationSchedule schedule = getEntityByGuid(guid);
-        if (schedule.getStatus().getId() == CANCELED) {
-            throw new StatusException(CANCELADO);
+        if (schedule.getStatus().getId() == CANCELLED) {
+            throw new StatusException(ALREADY_CANCELLED);
         }
         if (schedule.getStatus().isFinalState()) {
             throw new StatusException(ALREADY_PROCESSED);
         }
 
-        CommunicationStatus canceledStatus = communicationStatusRepository.findById(CANCELED)
+        CommunicationStatus canceledStatus = communicationStatusRepository.findById(CANCELLED)
                 .orElseThrow(() -> new StatusException(STATUS_CANCELLED_NOT_CONFIGURED));
 
         schedule.setStatus(canceledStatus);

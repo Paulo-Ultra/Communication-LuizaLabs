@@ -1,7 +1,5 @@
 package br.com.pauloultra.desafioluizalabs.utils;
 
-import org.apache.coyote.BadRequestException;
-
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
@@ -14,7 +12,7 @@ public class Utils {
             bb.putLong(uuid.getLeastSignificantBits());
             return bb.array();
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Formato de GUID inválido. Use o formato: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
+            throw new IllegalArgumentException("Invalid GUID format. Use the format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
         }
     }
 
