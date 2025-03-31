@@ -23,7 +23,6 @@ Solução completa para agendamento de comunicações com:
 
 ## 📝 Exemplos de Uso
 
-### 1. Agendar Comunicação
 ```http
 POST /api/v1/communications
 Content-Type: application/json
