@@ -293,7 +293,7 @@ CREATE DATABASE luizalabs_communication;
 
 3. Configure o application.properties:
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/magalu_comunicacao
+spring.datasource.url=jdbc:mysql://localhost:3306/luizalabs_communication
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 spring.flyway.locations=classpath:db/migration
